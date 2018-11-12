@@ -5,8 +5,6 @@ import theano.tensor as tt
 import csv
 
 # The following shows the difference between Clark (1973) and Taylor (1982)
-# TODO: compare model LOOs
-
 N = 5000
 
 returns = []
@@ -87,8 +85,6 @@ print "Taylor (1982) model parameters:"
 print "SigmaT = ", taylor_sigmaT
 print "Mu = ", taylor_mu
 print "Rhos = ", taylor_rhos
-
-print "Taylor (1982) model LOO: ", pm.loo(trace, taylor_model)
 
 print "Generating data for Clark DGP"
 clark = ClarkDGP(clark_mu, clark_sigmaT)

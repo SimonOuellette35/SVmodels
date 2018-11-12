@@ -5,9 +5,8 @@ import theano.tensor as tt
 import csv
 
 # The following shows the difference between Wiggins (1987) and Taylor (1982)
-# TODO: compare model LOOs
 
-N = 10000
+N = 5000
 
 returns = []
 with open('stock_returns.csv', 'rb') as csvfile:
@@ -46,9 +45,6 @@ print "Rhos = ", taylor_rhos
 # Wiggins
 def WigginsDGP(volatility_mu, volatility_theta, volatility_sigma):
 
-    print "Volatility mu = ", volatility_mu
-    print "Volatility theta = ", volatility_theta
-    print "Volatility sigma = ", volatility_sigma
     wiggins = []
     volatility = [volatility_mu]
     for _ in range(N):
@@ -98,7 +94,9 @@ with pm.Model() as wiggins_model:
 
     pm.Normal('obs', mu=0., sd=pm.math.exp(volatility), observed=returns)
 
-    trace = pm.sample(3000, tune=3000)
+    #trace = pm.sample(3000, tune=3000)
+    mean_field = pm.fit(30000, method='advi', obj_optimizer=pm.adam(learning_rate=0.01))
+    trace = mean_field.sample(2000)
 
 print "Wiggins (1987) model parameters:"
 
@@ -108,8 +106,6 @@ volatility_sigma = np.mean(trace['volatility_sigma'])
 print "Volatility mu: ", volatility_mu
 print "Volatility theta: ", volatility_theta
 print "Volatility sigma: ", volatility_sigma
-
-print "Wiggins (1987) model LOO: ", pm.loo(trace, wiggins_model)
 
 print "Generating data for Wiggins DGP"
 wiggins = WigginsDGP(volatility_mu, volatility_theta, volatility_sigma)
@@ -129,14 +125,17 @@ axarr[0][1].set_title("Wiggins")
 
 axarr[1][0].plot(taylor)
 axarr[1][0].set_title("Taylor")
+axarr[1][0].set_ylim(bottom=-0.15, top=0.15)
 
 axarr[1][1].plot(wiggins)
 axarr[1][1].set_title("Wiggins")
+axarr[1][1].set_ylim(bottom=-0.15, top=0.15)
 
 axarr[0][2].hist(returns)
 axarr[0][2].set_title("Real")
 
 axarr[1][2].plot(returns)
 axarr[1][2].set_title("Real")
+axarr[1][2].set_ylim(bottom=-0.15, top=0.15)
 
 plt.show()

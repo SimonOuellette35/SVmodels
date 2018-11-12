@@ -5,7 +5,6 @@ import csv
 import theano.tensor as tt
 
 # The following shows the difference between constant volatility Gaussian models and Clark (1973)
-# TODO: compare model LOOs
 
 N = 20000
 
@@ -54,8 +53,6 @@ mu = np.mean(trace['mu'])
 print "Clark (1973) model parameters:"
 print "SigmaT = ", sigmaT
 print "Mu = ", mu
-
-print "Clark (1973) model LOO: ", pm.loo(trace, clark_model)
 
 print "Generating Clark data..."
 clark = ClarkDGP(mu, sigmaT)
