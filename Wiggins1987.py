@@ -1,12 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pymc3 as pm
-import theano.tensor as tt
 import csv
 
 # The following shows the difference between Wiggins (1987) and Taylor (1982)
 
-N = 5000
+N = 10000
 
 returns = []
 with open('stock_returns.csv', 'rb') as csvfile:
@@ -35,7 +34,7 @@ returns = returns[:N]
 
 taylor_sigmaT = 0.2
 taylor_mu = -4.53
-taylor_rhos = [0.28135379, 0.23961292, 0.19247336, 0.14426539, 0.09512072]
+taylor_rhos = [0.30188776, 0.25813007, 0.20395745, 0.13450001, 0.06772271]
 
 print "Taylor (1982) model parameters:"
 print "SigmaT = ", taylor_sigmaT
@@ -94,7 +93,6 @@ with pm.Model() as wiggins_model:
 
     pm.Normal('obs', mu=0., sd=pm.math.exp(volatility), observed=returns)
 
-    #trace = pm.sample(3000, tune=3000)
     mean_field = pm.fit(30000, method='advi', obj_optimizer=pm.adam(learning_rate=0.01))
     trace = mean_field.sample(2000)
 
