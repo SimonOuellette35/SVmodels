@@ -74,7 +74,7 @@ with pm.Model() as taylor_model:
 
     pm.Normal('obs', mu=0., sd=pm.math.exp(mu + time_process), observed=returns)
 
-    mean_field = pm.fit(20000, method='advi', obj_optimizer=pm.adam(learning_rate=0.01))
+    mean_field = pm.fit(30000, method='advi', obj_optimizer=pm.adam(learning_rate=0.01))
     trace = mean_field.sample(1000)
 
 taylor_sigmaT = np.mean(trace['sigmaT'])
